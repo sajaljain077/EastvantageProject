@@ -10,6 +10,7 @@ import uuid
 
 app = FastAPI()
 
+
 @app.get("/")
 async def root():
     return JSONResponse(status_code=200, content={"message": "This the AddressBook"})
