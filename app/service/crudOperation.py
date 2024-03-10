@@ -1,9 +1,10 @@
-from app.schema import Users
+from app.schema import Users, Address
 from app.utils.utis import errorMaker, responseMaker, hashValueGenerator
 from app.constant import SECRETKEY
 from datetime import datetime
 from datetime import datetime, timedelta, timezone
 from app.utils.auth import create_access_token
+from fastapi.encoders import jsonable_encoder
 from app.constant import ACCESS_TOKEN_EXPIRE_MINUTES
 
 
@@ -19,7 +20,7 @@ async def addUserToDb(dbConn, payload, requestId):
         dbConn.add(dbresp)
         dbConn.commit()
     except Exception as err:
-        return await responseMaker(statusCode=500, requestId=requestId, errors=[], data={"msg":"Internal Servcie Error"})
+        return await responseMaker(statusCode=500, requestId=requestId, errors=[], data={"msg":"Internal Service Error"})
     return await responseMaker(statusCode=200, requestId=requestId, errors=[], data={"msg":"User Registerd Successfully, please login"})
 
 
@@ -35,3 +36,40 @@ async def checkUserExist(dbConn, payload, requestId):
     accessTokenExpires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     accessToken = await create_access_token(data={"sub": payload["emailId"]}, expires_delta=accessTokenExpires)
     return await responseMaker(statusCode=200, requestId=requestId, data={"accessToken":accessToken})
+
+
+async def getuserAddressInfoFromDb(requestId, dbConn, userInfo):
+    try:
+        addressInfo = jsonable_encoder(dbConn.query(Address).filter(Address.userId == userInfo["id"]).all())
+    except Exception as err:
+        return await responseMaker(statusCode=500, requestId=requestId, errors=[], data={"msg":"Internal Service Error"})
+    return await responseMaker(statusCode=200, requestId=requestId, data=addressInfo)
+
+
+async def addUserAddressInfoToDb(requestId, dbConn, loggedInUserInfo, payload):
+    if not dbConn.query(Address).filter(Address.userId == loggedInUserInfo.get("id")).first():
+        addresp = Address(userId = loggedInUserInfo["id"], latitude = payload.get("latitude"), longitude = payload.get("longitude"), createdOn = datetime.now())
+        try:
+            dbConn.add(addresp)
+            dbConn.commit()
+        except Exception as err:
+            return await responseMaker(statusCode=500, requestId=requestId, errors=[], data={"msg":"Internal Service Error"})
+        return await responseMaker(statusCode=200, requestId=requestId, data={"msg":"User address added succeessfully"})
+    return await responseMaker(statusCode=400, requestId=requestId, errors=[await errorMaker("addressAlreadyExist")])
+
+
+async def updateUserAddressInfoToDb(requestId, dbConn, loggedInUserInfo, payload):
+    addressInfo = dbConn.query(Address).filter(Address.userId == loggedInUserInfo.get("id"))
+    if addressInfo.first():
+        try:
+            addressInfo.update({"latitude": payload.get("latitude"), "longitude" : payload.get("longitude"), "updatedon":datetime.now()})
+            dbConn.commit()
+        except Exception as err:
+            return await responseMaker(statusCode=500, requestId=requestId, errors=[], data={"msg":"Internal Service Error"})
+        return await responseMaker(statusCode=200, requestId=requestId, data={"msg":"User address edited succeessfully"})
+    return await responseMaker(statusCode=400, requestId=requestId, errors=[await errorMaker("addressDoesNotExist")])
+
+
+
+async def getAllAddressWithInPerimeterFromDb(requestId, dbConn, loggedInUserInfo, payload):
+    pass

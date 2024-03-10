@@ -1,12 +1,12 @@
 from datetime import datetime, timedelta, timezone
 from datetime import datetime, timedelta
-from typing import Union, Any
-from fastapi.security import OAuth2PasswordBearer
+from typing import Union
 from jose import jwt, JWTError
 from app.constant import JWT_SECRET_KEY, ALGORITHM
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from app.schema import Users
+from fastapi.encoders import jsonable_encoder
 
 
 async def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
@@ -42,4 +42,4 @@ async def getCurrentUserInfo(dbConn, token):
 
 async def getUserInfo(dbConn, emailId):
     userInfo = dbConn.query(Users).filter(Users.emailId == emailId).first()
-    return userInfo
+    return jsonable_encoder(userInfo)

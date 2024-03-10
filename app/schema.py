@@ -11,7 +11,7 @@ class Users(Base):
     emailId = Column(VARCHAR(256), unique=True)
     hashedPassword = Column(VARCHAR(256))
     createdOn = Column(DateTime)
-    ADDRESS = relationship("Address", backref="Users")
+    ADDRESS = relationship("Address", uselist=False, backref="Users")
 
 
 class Address(Base):
@@ -21,4 +21,6 @@ class Address(Base):
     userId = Column(ForeignKey("Users.id"))
     latitude = Column(Float)
     longitude = Column(Float)
+    createdOn = Column(DateTime)
+    updatedon = Column(DateTime)
 
