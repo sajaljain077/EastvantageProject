@@ -40,12 +40,12 @@ The API uses token-based authentication. Users must sign up to obtain an access 
   - `access_token`: Token for accessing protected endpoints
 
 ### 3. Get Address
-- **Endpoint:** `[/address/{address_id}](http://127.0.0.1:8000/addressBook/v1/fetchUserAddress)`
+- **Endpoint:** `[/getAddress](http://127.0.0.1:8000/addressBook/v1/fetchUserAddress)`
 - **Method:** `GET`
 - **Authentication** `Pass access token`
 
 ### 4. Update Address
-- **Endpoint:** `/address/{address_id}`
+- **Endpoint:** `[/updateAddress](http://127.0.0.1:8000/addressBook/v1/updateAddress)`
 - **Method:** `PATCH`
 - **Parameters:**
   - `latitude`: New latitude
@@ -53,7 +53,7 @@ The API uses token-based authentication. Users must sign up to obtain an access 
 - **Authentication** `Pass access token`
 
 ### 5. Add Address
-- **Endpoint:** `[/address/{address_id}](http://127.0.0.1:8000/addressBook/v1/updateAddress)`
+- **Endpoint:** `[/addAddress](http://127.0.0.1:8000/addressBook/v1/updateAddress)`
 - **Method:** `POST`
 - **Parameters:**
   - `latitude`: New latitude
@@ -67,6 +67,7 @@ The API uses token-based authentication. Users must sign up to obtain an access 
   - `latitude`:  Latitude of the reference location
   - `longitude`: Longitude of the reference location
   - `distance`:  Distance in kilometers
+- **Authentication** `Pass access token`
 
 ## Getting Started
 
