@@ -37,12 +37,12 @@ The API uses token-based authentication. Users must sign up to obtain an access 
   - `emailId`: User's username
   - `password`: User's password
 - **Returns:**
-  - `access_token`: Token for accessing protected endpoints
+  - `accessToken`: Token for accessing protected endpoints
 
 ### 3. Get Address
 - **Endpoint:** `[/getAddress](http://127.0.0.1:8000/addressBook/v1/fetchUserAddress)`
 - **Method:** `GET`
-- **Authentication** `Pass access token`
+- **Authentication** `Pass accessToken`
 
 ### 4. Update Address
 - **Endpoint:** `[/updateAddress](http://127.0.0.1:8000/addressBook/v1/updateAddress)`
@@ -50,7 +50,7 @@ The API uses token-based authentication. Users must sign up to obtain an access 
 - **Parameters:**
   - `latitude`: New latitude
   - `longitude`: New longitude
-- **Authentication** `Pass access token`
+- **Authentication** `Pass accessToken`
 
 ### 5. Add Address
 - **Endpoint:** `[/addAddress](http://127.0.0.1:8000/addressBook/v1/updateAddress)`
@@ -58,7 +58,7 @@ The API uses token-based authentication. Users must sign up to obtain an access 
 - **Parameters:**
   - `latitude`: New latitude
   - `longitude`: New longitude
-- **Authentication** `Pass access token`
+- **Authentication** `Pass accessToken`
 
 ### 6. Get Addresses Within Distance
 - **Endpoint:** `[/addresses-within-distance](http://127.0.0.1:8000/addressBook/v1/addressWithInDistance)`
@@ -67,7 +67,7 @@ The API uses token-based authentication. Users must sign up to obtain an access 
   - `latitude`:  Latitude of the reference location
   - `longitude`: Longitude of the reference location
   - `distance`:  Distance in kilometers
-- **Authentication** `Pass access token`
+- **Authentication** `Pass accessToken`
 
 ## Getting Started
 
