@@ -10,7 +10,7 @@ import uuid
 
 app = FastAPI()
 
-
+# Define the root endpoint
 @app.get("/")
 async def root():
     return JSONResponse(status_code=200, content={"message": "This the AddressBook"})
@@ -20,6 +20,16 @@ async def root():
 
 @app.exception_handler(RequestValidationError)
 async def validationExceptionhandler(request:Request, exc:RequestValidationError):
+    """
+    Exception handler for handling validation errors.
+
+    Args:
+        request: FastAPI Request object.
+        exc: Instance of RequestValidationError.
+
+    Returns:
+        JSON response with validation error details.
+    """
     requestId = request.headers.get("requestId", str(uuid.uuid4()))
     inputValidationError = []
     for error in exc.errors():
@@ -29,7 +39,11 @@ async def validationExceptionhandler(request:Request, exc:RequestValidationError
             inputValidationError.append(await errorMaker("inputvalidationError", error['loc'][-1], error['msg']))
     return await responseMaker(requestId=requestId, errors=inputValidationError, statusCode=400)
 
+
+# Include routers for address and user controllers
 app.include_router(addressController.router, prefix="/addressBook/v1", tags=["AddressBook Related API"])
 app.include_router(userController.router, prefix="/user/v1", tags=["User Info Related API"])
 
+
+# Create database tables based on the defined schema
 schema.Base.metadata.create_all(bind=engine)

@@ -11,6 +11,17 @@ router = APIRouter()
 
 @router.post("/signUp")
 async def userSignup(request:Request, payload:UserInfo, dbConn:Session()=Depends(get_db)): # type: ignore
+    """
+    Endpoint for user signup.
+
+    Args:
+        request: FastAPI Request object.
+        payload: UserInfo model representing user signup data.
+        dbConn: Database session dependency.
+
+    Returns:
+        Response with information about the signup status.
+    """
     requestId = request.headers.get("requestId", str(uuid.uuid4()))
     payload = jsonable_encoder(payload)
     response = await addUserToDb(dbConn, payload, requestId)
@@ -20,6 +31,17 @@ async def userSignup(request:Request, payload:UserInfo, dbConn:Session()=Depends
 
 @router.post("/login")
 async def userLogin(request:Request, payload:UserInfo, dbConn:Session()=Depends(get_db), ): # type: ignore
+    """
+    Endpoint for user login.
+
+    Args:
+        request: FastAPI Request object.
+        payload: UserInfo model representing user login data.
+        dbConn: Database session dependency.
+
+    Returns:
+        Response with information about the login status.
+    """
     requestId = request.headers.get("requestId", str(uuid.uuid4()))
     payload = jsonable_encoder(payload)
     response = await checkUserExist(dbConn, payload, requestId)

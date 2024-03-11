@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from app.utils.auth import create_access_token
 from fastapi.encoders import jsonable_encoder
 from app.constant import ACCESS_TOKEN_EXPIRE_MINUTES
+import math
 
 
 
@@ -26,6 +27,14 @@ async def addUserToDb(dbConn, payload, requestId):
 
 
 async def checkUserExist(dbConn, payload, requestId):
+    """
+        Function to check whether log in user is valid or not
+        Args:
+            requestid, db connection, payload
+
+        Returns:
+            Access Token
+    """
     emailId = payload.get("emailId")
     password = payload.get("password")
     if not dbConn.query(Users).filter(Users.emailId == emailId).first():
@@ -47,6 +56,14 @@ async def getuserAddressInfoFromDb(requestId, dbConn, userInfo):
 
 
 async def addUserAddressInfoToDb(requestId, dbConn, loggedInUserInfo, payload):
+    """
+    Function to add the user address
+    Args:
+        requestid, db connection, user info whose data need to be added, payload
+
+    Returns:
+        Successfull message
+    """
     if not dbConn.query(Address).filter(Address.userId == loggedInUserInfo.get("id")).first():
         addresp = Address(userId = loggedInUserInfo["id"], latitude = payload.get("latitude"), longitude = payload.get("longitude"), createdOn = datetime.now())
         try:
@@ -59,6 +76,14 @@ async def addUserAddressInfoToDb(requestId, dbConn, loggedInUserInfo, payload):
 
 
 async def updateUserAddressInfoToDb(requestId, dbConn, loggedInUserInfo, payload):
+    """
+    Function to update the user address
+    Args:
+        requestid, db connection, user info whose data need to be updated, payload
+
+    Returns:
+        Successful message
+    """
     addressInfo = dbConn.query(Address).filter(Address.userId == loggedInUserInfo.get("id"))
     if addressInfo.first():
         try:
@@ -71,5 +96,48 @@ async def updateUserAddressInfoToDb(requestId, dbConn, loggedInUserInfo, payload
 
 
 
-async def getAllAddressWithInPerimeterFromDb(requestId, dbConn, loggedInUserInfo, payload):
-    pass
+async def getAllAddressWithInPerimeterFromDb(requestId, dbConn, payload):
+    """
+    Function to find all the cordinate wuth in given response
+
+    Args:
+        requestid, db connection, payload
+
+    Returns:
+        list of all cordinate with perimeter
+    """
+    resp = []
+    perimeter = payload["distance"]
+    ipLatitude = payload["latitude"]
+    inLongitude = payload["longitude"]
+    dbResp = jsonable_encoder(dbConn.query(Address.latitude, Address.longitude).all())
+
+    for address in dbResp:
+        distance = await distanceFinder(lat1=address["latitude"], lat2=ipLatitude, long1=address["longitude"], long2=inLongitude)
+        if distance <= perimeter:
+            resp.append(address)
+    return await responseMaker(statusCode=200, requestId=requestId, data=resp)
+
+
+async def distanceFinder(lat1, lat2, long1, long2):
+    """
+    Function to calculate the distance between two points
+
+    Args:
+        latitude and longitude of twoq points
+
+    Returns:
+        distance(K.m.) between these two points
+    """
+    dLat = (lat2 - lat1) * math.pi / 180.0
+    dLon = (long2 - long1) * math.pi / 180.0
+ 
+    lat1 = (lat1) * math.pi / 180.0
+    lat2 = (lat2) * math.pi / 180.0
+ 
+    a = (pow(math.sin(dLat / 2), 2) +
+         pow(math.sin(dLon / 2), 2) *
+             math.cos(lat1) * math.cos(lat2));
+    rad = 6371
+    c = 2 * math.asin(math.sqrt(a))
+    return rad * c

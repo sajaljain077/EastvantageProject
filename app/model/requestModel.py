@@ -4,13 +4,13 @@ import re
 
 
 class Address(BaseModel):
-    latitude    : str = Field(pattern='^(-?\d{1,2}(?:\.\d{1,6})?|-?90(?:\.0{1,6})?)$')
-    longitude   : str = Field(pattern='^(-?\d{1,3}(?:\.\d{1,6})?|-?180(?:\.0{1,6})?)$')
+    longitude  : float = Field(le=180,ge=-180)
+    latitude   : float = Field(le=90,ge=-90)
 
 
 class GetAddressesWithDistance(BaseModel):
-    latitude    : str = Field(pattern='^(-?\d{1,2}(?:\.\d{1,6})?|-?90(?:\.0{1,6})?)$')
-    longitude   : str = Field(pattern='^(-?\d{1,3}(?:\.\d{1,6})?|-?180(?:\.0{1,6})?)$')
+    longitude  : float = Field(le=180,ge=-180)
+    latitude   : float = Field(le=90,ge=-90)
     distance    : int = Field(strict=True)
 
     
