@@ -7,9 +7,7 @@ The Address Book Project is a simple API project for managing and retrieving add
 - [Authentication](#authentication)
 - [API Endpoints](#api-endpoints)
 - [Getting Started](#getting-started)
-- [Usage Examples](#usage-examples)
-- [Contributing](#contributing)
-- [License](#license)
+
 
 ## Features
 
