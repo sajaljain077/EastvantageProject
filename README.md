@@ -1,4 +1,4 @@
-# Address Book Project
+  # Address Book Project
 
 The Address Book Project is a simple API project for managing and retrieving addresses. It provides authentication through sign-up and login APIs, and offers functionality to get, update, and delete addresses. Additionally, there's an API to retrieve all addresses within a specified distance from a given location.
 
@@ -53,7 +53,7 @@ The API uses token-based authentication. Users must sign up to obtain an access 
 - **Authentication** `Pass accessToken`
 
 ### 5. Add Address
-- **Endpoint:** `[/addAddress](http://127.0.0.1:8000/addressBook/v1/updateAddress)`
+- **Endpoint:** `[/addAddress](http://127.0.0.1:8000/addressBook/v1/addAddress)`
 - **Method:** `POST`
 - **Parameters:**
   - `latitude`: New latitude
