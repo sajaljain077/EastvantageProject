@@ -166,7 +166,7 @@ async def distanceFinder(requestId, lat1, lat2, long1, long2):
  
     a = (pow(math.sin(dLat / 2), 2) +
          pow(math.sin(dLon / 2), 2) *
-             math.cos(lat1) * math.cos(lat2));
+             math.cos(lat1) * math.cos(lat2))
     rad = 6371
     c = 2 * math.asin(math.sqrt(a))
     logger.info('{} {}'.format(requestId, sys._getframe().f_code.co_name + " ended"))
